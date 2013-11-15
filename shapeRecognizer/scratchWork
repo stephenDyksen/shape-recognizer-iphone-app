@@ -1,0 +1,121 @@
+//  scratchWork is simply a location for saving scratch code and does not affect the program 
+//  Created by Stephen Dyksen (srd22) for CS Final Project
+//  May 8, 2013
+
+//    int index = dataLength/height;
+//    NSLog(@"%ld", (long)index);
+//    index = 0;
+//    pixelData[index + red] = 220;
+//    pixelData[index + green] = 40;
+//    pixelData[index + blue] = 40;
+//    index = 4;
+//    pixelData[index + red] = 220;
+//    pixelData[index + green] = 40;
+//    pixelData[index + blue] = 40;
+//    index = 804;
+//    pixelData[index + red] = 220;
+//    pixelData[index + green] = 40;
+//    pixelData[index + blue] = 40;
+
+//    int rowPadding = (((dataLength-(width*height*4))/width)+4);
+
+//Loop through the entire image pixel data except for 1 pixel around all edges
+	for (int i = (dataLength/height)+4; i < dataLength-(dataLength/height); i += dataLength/height) {
+        for (int j = i; j < (i+(4*(width-2))); j += 4) {
+            pixelData[j + red] = 220;
+            pixelData[j + green] = 40;
+            pixelData[j + blue] = 40;
+        }
+    }
+    
+    
+    //Run through image and apply gaussian blur technique with a 1 pixel width gaussian kernel
+    //Learn about Gaussian Blur: http://www.swageroo.com/wordpress/how-to-program-a-gaussian-blur-without-using-3rd-party-libraries/
+    for (int index = 4*(width+1); index < dataLength - ( 4*( (width+2) + (width+1) ) ); index += 4){
+        int pixel1 = pixelData[(index - 4*(width+1)) + red];
+        int pixel2 = pixelData[(index - 4*(width)) + red];
+        int pixel3 = pixelData[(index - 4*(width-1)) + red];
+        int pixel4 = pixelData[(index - 4) + red];
+        int pixel5 = pixelData[index + red];
+        int pixel6 = pixelData[(index + 4) + red];
+        int pixel7 = pixelData[(index + 4*(width-1)) + red];
+        int pixel8 = pixelData[(index + 4*(width)) + red];
+        int pixel9 = pixelData[(index + 4*(width+1)) + red];
+        
+        int newPixelNumber = 0.0947416*pixel1 + 0.118318*pixel2 + 0.0947416*pixel3 +
+        0.118318*pixel4 + 0.147761*pixel5 + 0.118318*pixel6 +
+        0.0947416*pixel7 + 0.118318*pixel8 + 0.0947416*pixel9;
+        
+        newPixelData[index + red] = newPixelNumber;
+        newPixelData[index + green] = newPixelNumber;
+        newPixelData[index + blue] = newPixelNumber;
+        //                newPixelData[index + red] = 220;
+        //                newPixelData[index + green] = 40;
+        //                newPixelData[index + blue] = 40;
+    }
+
+
+
+//Loop through the entire image pixel data except for 1 pixel around all edges
+	for (int i = (dataLength/height)+4; i < dataLength-(dataLength/height); i += dataLength/height) {
+        for (int j = i; j < (i+(4*(width-2))); j += 4) {
+            newPixelData[j + red] = 220;
+            newPixelData[j + green] = 40;
+            newPixelData[j + blue] = 40;
+        }
+    }
+    
+    
+    
+    
+    
+    //Output width values to output-log in X-Code
+    NSLog(@"Circle Difference");
+    NSLog(@"%lu", (long)circleModelDifference);
+    NSLog(@"Triangle Difference");
+    NSLog(@"%lu", (long)triangleModelDifference);
+    NSLog(@"Square Difference");
+    NSLog(@"%lu", (long)squareModelDifference);
+    
+    //Assign appropriate weights to final decision values
+    if(circleModelDifference < triangleModelDifference && circleModelDifference < squareModelDifference){
+        circle = 6;
+        square = 5;
+        triangle = 1;
+    }
+    else if (triangleModelDifference < circleModelDifference && triangleModelDifference < squareModelDifference){
+        triangle = 9;
+        circle = 2;
+        square = 2;
+    }
+    else{
+        square = 6;
+        circle = 5;
+        triangle = 1;
+    }
+    
+    
+    //Calculate the number of increases/decreases
+    int increases = 0;
+    int decreases = 0;
+    for(int i = 0; i<arrayLength-1; i++){
+        if([[leftToRightScan objectAtIndex:i]doubleValue] < [[leftToRightScan objectAtIndex:(i+1)]doubleValue]){
+            increases++;
+        }
+        else{
+            decreases++;
+        }
+    }
+    
+    NSLog(@"Increases");
+    NSLog(@"%lu", (long)increases);
+    NSLog(@"Decreases");
+    NSLog(@"%lu", (long)decreases);
+    
+    //Update final decision values
+    if((increases+decreases) > (5/7)*(arrayLength)){
+        circle = circle + 4;
+        triangle = triangle + 4;
+    }
+    
+    
