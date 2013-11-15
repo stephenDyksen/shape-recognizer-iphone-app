@@ -1,6 +1,6 @@
 shapeRecognizer_iPhoneApp
 =========================
-Created by Stephen Dyksen (srd22) for CS Final Project
+Created by Stephen Dyksen (srd22) Artificial Intelligence
 
 May 8, 2013
 
